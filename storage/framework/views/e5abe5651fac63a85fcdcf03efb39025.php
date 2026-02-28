@@ -95,6 +95,7 @@
                             <span>All Products</span>
                         </div>
                     </a>
+                    
                     <a href="<?php echo e(route('admin.products.create')); ?>" 
                        class="block px-4 py-3 rounded-lg hover:bg-gray-800 transition">
                         <div class="flex items-center space-x-3 ml-4">

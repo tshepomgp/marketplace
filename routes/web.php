@@ -16,6 +16,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\Customer\CreditController;  
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\Customer\EmailHostingController;
+use App\Http\Controllers\Admin\EmailHostingPlanController;
 
 // Public Routes
 Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
@@ -142,6 +143,7 @@ Route::middleware(['auth'])->prefix('customer')->name('customer.')->group(functi
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [App\Http\Controllers\Admin\AdminDashboardController::class, 'index'])->name('dashboard');
     Route::resource('products', 'Admin\ProductController');
+      Route::resource('email-hosting-plans', EmailHostingPlanController::class);
     Route::get('orders/vm', [AdminOrderController::class, 'vmOrders'])->name('orders.vm');
     Route::get('orders/storage', [AdminOrderController::class, 'storageOrders'])->name('orders.storage');
     Route::get('orders/{order}', [AdminOrderController::class, 'show'])->name('orders.show');
