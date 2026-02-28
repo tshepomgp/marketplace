@@ -1,0 +1,189 @@
+
+
+<?php $__env->startSection('title', 'Order Virtual Machine'); ?>
+<script src="//unpkg.com/alpinejs" defer></script>
+
+<?php $__env->startSection('content'); ?>
+<div class="mb-8">
+    <h1 class="text-4xl font-bold text-mtn-black mb-2">Order Virtual Machine</h1>
+    <p class="text-gray-600">Select the VM configuration that best fits your needs.</p>
+</div>
+
+<!-- VM Cards Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+    <?php $__empty_1 = true; $__currentLoopData = $products; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $vm): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+    <div class="bg-white rounded-lg shadow hover:shadow-lg border border-gray-200 overflow-hidden transition">
+
+        <!-- Header -->
+        <div class="bg-gradient-to-r from-mtn-black to-gray-800 text-white p-6">
+            <h2 class="text-2xl font-bold"><?php echo e($vm->name); ?></h2>
+            <p class="text-sm opacity-90">SKU: <?php echo e($vm->sku_code); ?></p>
+            <div class="mt-2 text-3xl font-bold text-mtn-yellow"><?php echo e(number_format($vm->price_monthly, 0)); ?> XAF<span class="text-sm font-normal text-white">/month</span></div>
+        </div>
+
+        <!-- Tabs -->
+        <div x-data="{ tab: 'specs' }" class="p-6">
+            <div class="flex border-b border-gray-200 mb-4">
+                <button @click="tab = 'specs'" :class="tab === 'specs' ? 'border-b-2 border-mtn-yellow font-bold text-mtn-black' : 'text-gray-600'" class="py-2 px-4 focus:outline-none">Specifications</button>
+                <button @click="tab = 'order'" :class="tab === 'order' ? 'border-b-2 border-mtn-yellow font-bold text-mtn-black' : 'text-gray-600'" class="py-2 px-4 focus:outline-none">Order</button>
+            </div>
+
+            <!-- Specs Tab -->
+            <div x-show="tab === 'specs'" class="space-y-4">
+                <p class="text-gray-600"><?php echo e($vm->description); ?></p>
+
+                <?php
+                    $specs = json_decode($vm->features, true) ?? [];
+                ?>
+
+                <?php if($specs): ?>
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <h3 class="font-bold text-mtn-black mb-2">Specifications:</h3>
+                    <div class="grid grid-cols-2 gap-2 text-sm">
+                        <?php $__currentLoopData = ['os','cpu','ram','storage','database','uptime_sla','support']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <?php if(isset($specs[$key])): ?>
+                            <div class="flex items-start">
+                                <span class="text-mtn-yellow font-bold mr-2"><?php echo e(strtoupper(str_replace('_',' ',$key))); ?>:</span>
+                                <span class="text-gray-700"><?php echo e($specs[$key]); ?></span>
+                            </div>
+                            <?php endif; ?>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                    </div>
+                </div>
+                <?php endif; ?>
+            </div>
+
+            <!-- Order Tab -->
+            <!-- Order Tab -->
+<div x-show="tab === 'order'" class="space-y-3">
+    <form action="<?php echo e(route('customer.vm-orders.store')); ?>" method="POST" class="space-y-3">
+        <?php echo csrf_field(); ?>
+        <input type="hidden" name="product_id" value="<?php echo e($vm->id); ?>">
+        <input type="hidden" name="sku_code" value="<?php echo e($vm->sku_code); ?>">
+        <input type="hidden" name="product_name" value="<?php echo e($vm->name); ?>">
+        <input type="hidden" name="total_amount" value="<?php echo e(number_format($vm->price_monthly, 0)); ?>">
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Quantity</label>
+                <input type="number" name="quantity" value="1" min="1" max="10" required
+                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-mtn-yellow">
+                <p class="text-xs text-gray-500 mt-1">Min: <?php echo e($vm->minimum_order_quantity ?? 1); ?> | Available: <?php echo e($vm->available_quantity ?? '∞'); ?></p>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Number of Users</label>
+                <input type="number" name="number_of_users" value="1" min="1" required
+                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-mtn-yellow">
+            </div>
+        </div>
+
+        <div>
+            <label class="block text-sm font-medium text-gray-700">Organization Name</label>
+            <input type="text" name="organization_name" placeholder="Your company name" required
+                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-mtn-yellow">
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Email</label>
+                <input type="email" name="email" placeholder="you@example.com"
+                       value="<?php echo e(auth()->user()->email); ?>" required
+                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-mtn-yellow">
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Phone</label>
+                <input type="tel" name="phone" placeholder="+237..."
+                       value="<?php echo e(auth()->user()->phone); ?>" required
+                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-mtn-yellow">
+            </div>
+        </div>
+
+        <div>
+            <label class="block text-sm font-medium text-gray-700">Special Requirements</label>
+            <textarea name="special_requirements" rows="3" placeholder="Any special needs..."
+                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-mtn-yellow"></textarea>
+        </div>
+
+        <!-- ADD PAYMENT METHOD SELECTION -->
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-3">Payment Method *</label>
+            <div class="space-y-2">
+                <label class="flex items-center p-3 border-2 border-gray-300 rounded-lg cursor-pointer hover:border-mtn-yellow hover:bg-yellow-50">
+                    <input type="radio" name="payment_method" value="mtn_momo" required class="w-4 h-4">
+                    <span class="ml-3">
+                        <span class="block font-semibold text-sm">MTN Mobile Money</span>
+                        <span class="text-xs text-gray-600">Pay with MTN +237</span>
+                    </span>
+                </label>
+                
+                <label class="flex items-center p-3 border-2 border-gray-300 rounded-lg cursor-pointer hover:border-mtn-yellow hover:bg-yellow-50">
+                    <input type="radio" name="payment_method" value="orange_money" required class="w-4 h-4">
+                    <span class="ml-3">
+                        <span class="block font-semibold text-sm">Orange Money</span>
+                        <span class="text-xs text-gray-600">Pay with Orange +237</span>
+                    </span>
+                </label>
+                
+                <label class="flex items-center p-3 border-2 border-gray-300 rounded-lg cursor-pointer hover:border-mtn-yellow hover:bg-yellow-50">
+                    <input type="radio" name="payment_method" value="card" required class="w-4 h-4">
+                    <span class="ml-3">
+                        <span class="block font-semibold text-sm">Credit/Debit Card</span>
+                        <span class="text-xs text-gray-600">Visa, Mastercard, Amex</span>
+                    </span>
+                </label>
+
+                <label class="flex items-center p-3 border-2 border-gray-300 rounded-lg cursor-pointer hover:border-mtn-yellow hover:bg-yellow-50">
+                    <input type="radio" name="payment_method" value="credit" required class="w-4 h-4">
+                    <span class="ml-3">
+                        <span class="block font-semibold text-sm">Credit Limit</span>
+                        <span class="text-xs text-gray-600">Available: <?php echo e(number_format(auth()->user()->getAvailableCredit(), 0)); ?> XAF</span>
+                    </span>
+                </label>
+            </div>
+        </div>
+
+        <button type="submit" class="w-full bg-mtn-yellow text-black py-3 rounded-lg font-bold hover:bg-mtn-orange transition">
+            Order <?php echo e($vm->name); ?>
+
+        </button>
+    </form>
+</div>
+        </div>
+    </div>
+    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
+    <div class="col-span-2 bg-white rounded-lg shadow p-12 text-center">
+        <p class="text-gray-600 mb-4">No VMs available at the moment.</p>
+        <a href="<?php echo e(route('customer.dashboard')); ?>" class="text-mtn-yellow hover:text-mtn-orange font-semibold">← Back to Dashboard</a>
+    </div>
+    <?php endif; ?>
+</div>
+
+<!-- Why Choose Our VMs -->
+<div class="bg-white rounded-lg shadow p-8 mb-8">
+    <h2 class="text-2xl font-bold text-mtn-black mb-6">Why Choose Our VMs?</h2>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <?php $__currentLoopData = [
+            ['title' => 'Fast Deployment', 'desc' => 'Get your VM ready in minutes, not hours', 'color' => 'bg-mtn-yellow', 'icon' => 'M13 10V3L4 14h7v7l9-11h-7z'],
+            ['title' => 'Enterprise Security', 'desc' => 'DDoS protection and 24/7 monitoring', 'color' => 'bg-mtn-orange', 'icon' => 'M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z'],
+            ['title' => '24/7 Support', 'desc' => 'Expert support team always ready to help', 'color' => 'bg-mtn-yellow', 'icon' => 'M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z']
+        ]; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $feature): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+        <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-md <?php echo e($feature['color']); ?>">
+                <svg class="h-6 w-6 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="<?php echo e($feature['icon']); ?>"/>
+                </svg>
+            </div>
+            <div>
+                <h3 class="text-lg font-medium text-mtn-black"><?php echo e($feature['title']); ?></h3>
+                <p class="text-gray-600 text-sm"><?php echo e($feature['desc']); ?></p>
+            </div>
+        </div>
+        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+    </div>
+</div>
+
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.customer', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\TMOKK5\Projects\microsoft-marketplace\resources\views/customer/products/vm-order.blade.php ENDPATH**/ ?>

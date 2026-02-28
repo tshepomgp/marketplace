@@ -1,0 +1,8 @@
+key: 3mM44YwfEH8QFR_CJpgVPJTXRz7kpsxH9E4VW
+
+secret: K3Wadtyk4kbD3WXNMyMCk5
+
+
+\Illuminate\Support\Facades\Http::withHeaders([
+    'Authorization' => 'sso-key 3mM44YwfEH8QFR_CJpgVPJTXRz7kpsxH9E4VW:K3Wadtyk4kbD3WXNMyMCk5'
+])->get('https://api.godaddy.com/v1/domains/available?domain=google.com')
