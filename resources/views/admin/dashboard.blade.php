@@ -122,7 +122,20 @@
                     </div>
                 </div>
             </a>
-            
+
+           <a href="{{ route('admin.colocation-skus.create') }}" class="bg-white rounded-lg shadow p-6 hover:shadow-lg transition">
+    <div class="flex items-center space-x-4">
+        <div class="bg-mtn-yellow rounded-full p-3">
+            <svg class="w-6 h-6 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+            </svg>
+        </div>
+        <div>
+            <p class="font-bold text-lg">Add Colocation SKU</p>
+            <p class="text-sm text-gray-600">Create new Co-Location product</p>
+        </div>
+    </div>
+</a> 
             <a href="{{ route('admin.products.index') }}" class="bg-white rounded-lg shadow p-6 hover:shadow-lg transition">
                 <div class="flex items-center space-x-4">
                     <div class="bg-blue-100 rounded-full p-3">

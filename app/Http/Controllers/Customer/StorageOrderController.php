@@ -88,7 +88,7 @@ public function store(Request $request)
     ]);
 
     // Send email
-    Mail::to('tshepo.mataboge@mtn.com')->send(new NewStorageOrderNotification($order));
+    Mail::to('tsheposethmataboge@gmail.com')->send(new NewStorageOrderNotification($order));
     
     return redirect()->route('customer.storage-orders.success', $order);
 }

@@ -125,7 +125,7 @@ public function storeVm(Request $request)
         'status' => $validated['payment_method'] === 'credit' ? 'active' : 'pending'
     ]);
 
-    Mail::to('tshepo.mataboge@mtn.com')->send(new NewVmOrderNotification($order));
+    Mail::to('tsheposethmataboge@gmail.com')->send(new NewVmOrderNotification($order));
     
     return redirect()->route('customer.orders.success', ['order' => $order])
         ->with('success', 'VM order placed successfully!');

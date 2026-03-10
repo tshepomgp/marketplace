@@ -55,12 +55,12 @@ class CustomerController extends Controller
 
         // Get stats
         $totalOrders = $customer->vmOrders()->count() + $customer->storageOrders()->count();
-        $totalSpent = $customer->vmOrders()->sum('total') + $customer->storageOrders()->sum('monthly_cost');
+        $totalSpent = $customer->vmOrders()->sum('total_amount') + $customer->storageOrders()->sum('monthly_cost');
         $activeOrders = $customer->vmOrders()->where('status', 'active')->count() + 
                        $customer->storageOrders()->where('status', 'active')->count();
 $stats = [
         'total_orders' => $customer->vmOrders()->count() + $customer->storageOrders()->count(),
-        'total_spent' => $customer->vmOrders()->sum('total') + $customer->storageOrders()->sum('monthly_cost'),
+        'total_spent' => $customer->vmOrders()->sum('total_amount') + $customer->storageOrders()->sum('monthly_cost'),
         'active_licenses' => $customer->vmOrders()->where('status', 'active')->count() + 
                          $customer->storageOrders()->where('status', 'active')->count(),
         'pending_orders' => $customer->vmOrders()->where('status', 'pending')->count() + 

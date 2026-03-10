@@ -20,6 +20,8 @@ class CustomerDashboardController extends Controller
     public function index()
     {
         $user = Auth::user();
+	 $customer = $user->customer()->with('user')->first();
+
      $recentOrders = auth()->user()
     ->orders()
     ->with('user')
@@ -45,9 +47,23 @@ $storageOrders = auth()->user()
         // You can uncomment these once your models are set up:
         // $recentOrders = Order::where('customer_id', $user->id)->latest()->take(5)->get();
         // $storageOrders = StorageOrder::where('customer_id', $user->id)->latest()->take(5)->get();
+
+ $recentOrders->each(function($order) {
+        $order->calculated_total = $order->items->sum(fn($item) => $item->quantity * $item->unit_price);
+    });
+
+ $stats = [
+        'active_licenses' => $recentOrders->where('status', 'active')->count(),
+        'storage_allocated' => $storageOrders->sum('storage_size'),
+	'total_orders' => $recentOrders->count(),
+        'total_spend' => $recentOrders->sum('calculated_total'),
+    ];
+
         
         return view('customer.dashboard', [
             'user' => $user,
+	    'customer' => $customer,
+	    'stats' => $stats,
             'recentOrders' => $recentOrders,
             'vmOrders' =>  $vmOrders,
             'storageOrders' => $storageOrders

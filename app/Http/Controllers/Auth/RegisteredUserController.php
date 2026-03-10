@@ -34,7 +34,6 @@ class RegisteredUserController extends Controller
             'tenant_type' => ['required', 'in:new,existing'],
             'existing_tenant_id' => ['required_if:tenant_type,existing', 'nullable', 'string'],
         ]);
-
         // Create customer record
         $customer = Customer::create([
             'company_name' => $request->company_name,
@@ -66,6 +65,7 @@ class RegisteredUserController extends Controller
         // Create user account
         $user = User::create([
             'name' => $request->name,
+            'company_name' => $request->company_name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'role' => 'customer',

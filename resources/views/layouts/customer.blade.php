@@ -109,6 +109,12 @@
                                 <button type="submit" class="w-full text-left px-4 py-2 hover:bg-gray-100">Logout</button>
                             </form>
                         </div>
+    </div>
+                           <div class="flex items-center gap-4 ml-auto">
+        <a href="{{ route('clientzone.dashboard') }}" class="bg-mtn-yellow text-black px-6 py-2 rounded-lg font-bold hover:bg-mtn-orange transition text-sm">
+            Client Zone
+        </a>
+	
                     </div>
                 </div>
             </div>

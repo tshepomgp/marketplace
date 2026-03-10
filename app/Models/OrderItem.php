@@ -25,7 +25,6 @@ class OrderItem extends Model
         'metadata' => 'array',
     ];
 
-    
 
     public function product()
     {

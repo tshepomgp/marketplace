@@ -1,0 +1,55 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\EmailAccount;
+use App\Models\Domain;
+use Illuminate\Http\Request;
+use Auth;
+
+class ClientZoneController extends Controller
+{
+    public function loginForm()
+    {
+        // If already logged in to marketplace, redirect to clientzone
+        if(Auth::check()) {
+            return redirect()->route('clientzone.dashboard');
+        }
+        
+        return view('clientzone.login');
+    }
+
+    public function dashboard()
+    {
+        $user = Auth::user();
+        
+        // Get user's email accounts
+        $emailAccounts = EmailAccount::where('user_id', $user->id)->get();
+        
+        // Get user's domains
+        $domains = Domain::where('user_id', $user->id)->get();
+
+        return view('clientzone.dashboard', compact('user', 'emailAccounts', 'domains'));
+    }
+
+    public function email()
+    {
+        $user = Auth::user();
+        $account = EmailAccount::where('user_id', $user->id)
+            ->with('domain')
+            ->first();;
+
+        return view('clientzone.email', compact('account'));
+    }
+
+    public function wordpress()
+    {
+        return view('clientzone.wordpress');
+    }
+
+    public function logout()
+    {
+        Auth::logout();
+        return redirect('/')->with('success', 'Logged out');
+    }
+}

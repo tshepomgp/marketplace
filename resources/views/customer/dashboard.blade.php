@@ -5,6 +5,9 @@
 @section('content')
 <div class="mb-8">
     <h2 class="text-4xl font-bold text-mtn-black mb-2">Welcome, {{ Auth::user()->name }}!</h2>
+	<p class="text-gray-600 text-lg">
+        <span class="font-semibold">Tenant:</span> {{ $customer->domain ?? 'N/A' }}
+    </p>
     <p class="text-gray-600">Manage your Microsoft licenses and cloud storage</p>
 </div>
 
@@ -14,7 +17,7 @@
         <div class="flex items-center justify-between">
             <div>
                 <p class="text-gray-600 text-sm">Active Licenses</p>
-                <p class="text-3xl font-bold text-mtn-black mt-2">0</p>
+                <p class="text-3xl font-bold text-mtn-black mt-2">{{ $stats['active_licenses'] }}</p>
             </div>
             <div class="bg-blue-100 rounded-full p-3">
                 <svg class="w-8 h-8 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
@@ -29,7 +32,7 @@
         <div class="flex items-center justify-between">
             <div>
                 <p class="text-gray-600 text-sm">Storage Allocated</p>
-                <p class="text-3xl font-bold text-mtn-black mt-2">0 TB</p>
+                <p class="text-3xl font-bold text-mtn-black mt-2">{{ $stats['storage_allocated'] }} TB</p>
             </div>
             <div class="bg-green-100 rounded-full p-3">
                 <svg class="w-8 h-8 text-green-600" fill="currentColor" viewBox="0 0 20 20">
@@ -43,7 +46,7 @@
         <div class="flex items-center justify-between">
             <div>
                 <p class="text-gray-600 text-sm">Total Orders</p>
-                <p class="text-3xl font-bold text-mtn-black mt-2">0</p>
+                <p class="text-3xl font-bold text-mtn-black mt-2">{{ $stats['total_orders'] }}</p>
             </div>
             <div class="bg-purple-100 rounded-full p-3">
                 <svg class="w-8 h-8 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
@@ -58,8 +61,8 @@
     <div class="bg-white rounded-lg shadow p-6">
         <div class="flex items-center justify-between">
             <div>
-                <p class="text-gray-600 text-sm">Monthly Spend</p>
-                <p class="text-3xl font-bold text-mtn-yellow mt-2">0 XAF</p>
+                <p class="text-gray-600 text-sm">Total Spend</p>
+                <p class="text-3xl font-bold text-mtn-yellow mt-2">{{ number_format($stats['total_spend'], 0) }} XAF</p>
             </div>
             <div class="bg-yellow-100 rounded-full p-3">
                 <svg class="w-8 h-8 text-yellow-600" fill="currentColor" viewBox="0 0 20 20">
@@ -102,7 +105,16 @@
         <p class="text-gray-600 text-sm">Get cloud storage plans with automatic backups and geo-redundancy</p>
     </a>
 
-    <a href="#" class="bg-white rounded-lg shadow p-6 hover:shadow-lg transition">
+ <a href="{{ route('customer.colocation.index') }}" class="bg-white rounded-lg shadow p-6 hover:shadow-lg transition">
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="text-xl font-bold text-mtn-black">Order Rack Space - Co-Location</h3>
+            <svg class="w-6 h-6 text-mtn-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+        </div>
+        <p class="text-gray-600 text-sm">Rack Space</p>
+    </a>
+ <a href="#" class="bg-white rounded-lg shadow p-6 hover:shadow-lg transition">
         <div class="flex items-center justify-between mb-4">
             <h3 class="text-xl font-bold text-mtn-black">Manage Orders</h3>
             <svg class="w-6 h-6 text-mtn-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -111,7 +123,12 @@
         </div>
         <p class="text-gray-600 text-sm">View, track, and manage all your active orders and subscriptions</p>
     </a>
+
 </div>
+
+</div>
+
+
 
 <!-- RecAent Orders -->
 <!-- MS Licences Orders -->

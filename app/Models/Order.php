@@ -54,8 +54,13 @@ class Order extends Model
 
     public function items()
     {
-        return $this->hasMany(OrderItem::class);
+        return $this->hasMany(OrderItem::class, 'order_id');
     }
+
+public function getTotal()
+{
+    return $this->items()->sum('total_price') ?? ($this->items()->sum('quantity') * $this->items()->first()?->unit_price ?? 0);
+}
 
     public function subscriptions()
     {

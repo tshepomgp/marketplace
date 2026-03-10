@@ -17,6 +17,8 @@ use App\Http\Controllers\Customer\CreditController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\Customer\EmailHostingController;
 use App\Http\Controllers\Admin\EmailHostingPlanController;
+use App\Http\Controllers\ClientZoneController;
+use App\Http\Controllers\Admin\ColocationSkuController;
 
 // Public Routes
 Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
@@ -110,6 +112,10 @@ Route::middleware(['auth'])->prefix('customer')->name('customer.')->group(functi
     Route::get('storage-orders/{order}/success', [StorageOrderController::class, 'success'])->name('storage-orders.success');
     Route::get('dashboard', [CustomerDashboardController::class, 'index'])->name('dashboard');
 
+    Route::get('colocation', [\App\Http\Controllers\Customer\ColocationController::class, 'index'])->name('colocation.index');
+    Route::post('colocation', [\App\Http\Controllers\Customer\ColocationController::class, 'store'])->name('colocation.store');
+    Route::get('colocation/success/{colocationOrder}', [\App\Http\Controllers\Customer\ColocationController::class, 'success'])->name('colocation.success');
+
       Route::get('vm-control/{order}', [CustomerDashboardController::class, 'vmControl'])->name('vm.control');
           // VM Control Panel
     Route::get('vm-control/{order}', [CustomerDashboardController::class, 'vmControl'])->name('vm.control');
@@ -150,6 +156,10 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('orders/export/{type}', [AdminOrderController::class, 'export'])->name('orders.export');
     Route::get('dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
     Route::resource('products', ProductController::class);
+
+    Route::resource('colocation-skus', ColocationSkuController::class);
+    Route::get('colocation-payments', [ColocationPaymentController::class, 'index'])->name('colocation-payments.index');
+    Route::get('colocation-payments/{colocationPayment}', [ColocationPaymentController::class, 'show'])->name('colocation-payments.show');
     
      Route::get('email-hosting/orders', [\App\Http\Controllers\Admin\EmailHostingController::class, 'orders'])->name('email-hosting.orders');
     Route::get('email-hosting/orders/{order}', [\App\Http\Controllers\Admin\EmailHostingController::class, 'showOrder'])->name('email-hosting.show-order');
@@ -186,6 +196,26 @@ Route::get(
     })->name('settings.index');
 });
 
+//ClientZone
+Route::prefix('clientzone')->group(function () {
+    // Only accessible if logged in to marketplace
+    Route::middleware(['auth'])->group(function () {
+        Route::get('dashboard', [ClientZoneController::class, 'dashboard'])->name('clientzone.dashboard');
+        Route::get('email', [ClientZoneController::class, 'email'])->name('clientzone.email');
+        Route::get('wordpress', [ClientZoneController::class, 'wordpress'])->name('clientzone.wordpress');
+        Route::get('logout', [ClientZoneController::class, 'logout'])->name('clientzone.logout');
+});    
+    // Redirect to dashboard if already logged in
+    Route::get('login', [ClientZoneController::class, 'loginForm'])->name('clientzone.login');
+});
+
+Route::middleware(['auth'])->name('clientzone.')->group(function () {
+    Route::get('managed-servers', [\App\Http\Controllers\ClientZone\ManagedServerController::class, 'index'])->name('managed-servers');
+    Route::get('dedicated-servers', [\App\Http\Controllers\ClientZone\DedicatedServerController::class, 'index'])->name('dedicated-servers');
+    Route::get('file-manager', [\App\Http\Controllers\ClientZone\FileManagerController::class, 'index'])->name('file-manager');
+});
+
+
 // Webhooks (no auth)
 Route::post('/webhooks/mtn-momo', [App\Http\Controllers\CheckoutController::class, 'mtnMomoWebhook'])->name('webhooks.mtn-momo');
 Route::post('/webhooks/orange-money', [App\Http\Controllers\CheckoutController::class, 'orangeMoneyWebhook'])->name('webhooks.orange-money');
@@ -199,6 +229,7 @@ Route::middleware(['auth'])->prefix('customer')->name('customer.')->group(functi
     // Domain search
     Route::get('email-hosting/domain-search', [EmailHostingController::class, 'searchDomain'])->name('email-hosting.domain-search');
     Route::post('email-hosting/check-availability', [EmailHostingController::class, 'checkAvailability'])->name('email-hosting.check-availability');
+
     
     // Checkout
     Route::get('email-hosting/checkout', [EmailHostingController::class, 'checkout'])->name('email-hosting.checkout');
@@ -209,6 +240,8 @@ Route::middleware(['auth'])->prefix('customer')->name('customer.')->group(functi
     Route::get('email-hosting/my-domains', [EmailHostingController::class, 'myDomains'])->name('email-hosting.my-domains');
     Route::get('email-hosting/domain/{domain}', [EmailHostingController::class, 'showDomain'])->name('email-hosting.domain-details');
 });
+
+
 
 
 require __DIR__.'/auth.php';

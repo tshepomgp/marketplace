@@ -1,0 +1,66 @@
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Email Accounts</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+@extends('layouts.customer')
+
+@section('title', 'Email Hosting')
+
+@section('content')
+
+<body class="bg-gray-50">
+<div class="flex min-h-screen">
+    <!-- Sidebar (same as above) -->
+    <div class="w-64 bg-mtn-black text-white p-6">
+        <h2 class="text-2xl font-bold mb-8">Client Zone</h2>
+        <nav class="space-y-4">
+            <a href="{{ route('clientzone.dashboard') }}" class="block px-4 py-2 rounded hover:bg-gray-700">Dashboard</a>
+            <a href="{{ route('clientzone.email') }}" class="block px-4 py-2 rounded bg-mtn-yellow text-black font-semibold">Email Accounts</a>
+            <a href="{{ route('clientzone.wordpress') }}" class="block px-4 py-2 rounded hover:bg-gray-700">WordPress</a>
+            <a href="{{ route('clientzone.logout') }}" class="block px-4 py-2 rounded hover:bg-gray-700 text-red-400">Logout</a>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex-1 p-8">
+        <h1 class="text-4xl font-bold text-mtn-black mb-8">Email Accounts</h1>
+
+        <div class="bg-white rounded-lg shadow p-8">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold">{{ $account->email_address }}</h2>
+                <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-semibold">Active</span>
+            </div>
+
+            <div class="grid grid-cols-2 gap-6 mb-8">
+                <div>
+                    <p class="text-gray-600 text-sm">IMAP Server</p>
+                    <p class="font-bold">{{ $account->imap_host }}</p>
+                </div>
+                <div>
+                    <p class="text-gray-600 text-sm">IMAP Port</p>
+                    <p class="font-bold">{{ $account->imap_port }}</p>
+                </div>
+                <div>
+                    <p class="text-gray-600 text-sm">SMTP Server</p>
+                    <p class="font-bold">{{ $account->smtp_host }}</p>
+                </div>
+                <div>
+                    <p class="text-gray-600 text-sm">SMTP Port</p>
+                    <p class="font-bold">{{ $account->smtp_port }}</p>
+                </div>
+            </div>
+
+            <div class="bg-blue-50 p-4 rounded border-l-4 border-blue-500">
+                <p class="text-sm text-blue-900"><strong>Setup Instructions:</strong> Use the IMAP/SMTP settings above to configure your email client (Outlook, Gmail, Thunderbird, etc.)</p>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+</html>
+@endsection

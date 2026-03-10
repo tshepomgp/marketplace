@@ -30,7 +30,7 @@ class Customer extends Model
 
     public function user()
     {
-        return $this->hasOne(User::class);
+        return $this->hasOne(User::class, 'customer_id');
     }
 
     public function orders()
